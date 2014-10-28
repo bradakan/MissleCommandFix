@@ -1,0 +1,24 @@
+missle factory abstract maken 
+- MissleClass de main class maken die PlayerMissle en EnemyMissle gaan extenden
+
+abstract player factory maken (2 typen met barrel om te schieten en zonder de random extra targets)
+- turret
+- extra target
+
+factory voor ground movement
+- objecten maken die over de grond bewegen
+
+UI
+-startMenu
+-score
+
+Sounds
+-background music
+-explosion
+
+Extra
+-incremental difficulty
+-fullscreen
+-preloader
+
+PlayerDeath
