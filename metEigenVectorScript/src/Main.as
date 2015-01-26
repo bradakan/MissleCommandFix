@@ -1,10 +1,12 @@
 package 
 {
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import utils.MathVector;
 	import factories.MissleFactory;
+	import factories.NonGameplayFactory;
 	import objects.*;
 	import flash.media.Sound;
 	
@@ -23,9 +25,11 @@ package
 		var turret : Turret;
 		var city : Target;
 		var missleFactory : MissleFactory;
+		var carFactory : NonGameplayFactory;
 		var explosion : ExplosionClass;
 		var _score : int = 0;
 		var _enemyAmount : int = 10;
+		var _cars:Array = [];
 		
 		public function Main():void 
 		{
@@ -40,11 +44,18 @@ package
 			// entry point
 			
 			missleFactory = new MissleFactory();
+			carFactory = new NonGameplayFactory();
 			missleArray = [];
 			explosionArray = [];
 			targetArray = new Array;
+			_cars = [carFactory.makeCar(stage.stageWidth,stage.stageHeight),carFactory.makeCar(stage.stageWidth,stage.stageHeight),carFactory.makeCar(stage.stageWidth,stage.stageHeight),]
 			
-			playerArray = [turret = new Turret(50, stage.stageHeight -100),turret = new Turret(stage.stageWidth / 2, stage.stageHeight - 100),turret = new Turret(stage.stageWidth - 50, stage.stageHeight - 100)];
+			for (var car : int = 0; car < _cars.length; car++ )
+			{
+				addChild(_cars[car]);
+			}
+			
+			playerArray = [new Turret(50, stage.stageHeight -100),new Turret(stage.stageWidth / 2, stage.stageHeight - 100),new Turret(stage.stageWidth - 50, stage.stageHeight - 100)];
 			for (var i : uint = 0; i < playerArray.length; i++ )
 			{
 				addChild(playerArray[i]);
@@ -123,12 +134,12 @@ package
 			}
 			if (playerArray.length == 0)
 			{
-				trace("dead");
+				//trace("dead");
 			}
 			else
 			{
 				_score++;
-				trace(_score);
+				//trace(_score);
 			}
 			if (playerArray.length == 0)
 			{
@@ -141,11 +152,52 @@ package
 				makeMissle();
 				
 			}
+			
+			for (var car : int = 0; car < _cars.length; car++ )
+			{
+				_cars[car].update();
+			}
 		}
 		
 		private function shoot (e:MouseEvent):void
 		{
-			var targetNumber : Number = Math.floor(Math.random() * playerArray.length);
+			if (playerArray.length == 3)
+			{
+				var zero :int = Math.sqrt(((playerArray[0].x - mouseX) * (playerArray[0].x - mouseX))+ ((playerArray[0].y - mouseY) * (playerArray[0].y - mouseY)));
+				var one :int = Math.sqrt(((playerArray[1].x - mouseX) * (playerArray[1].x - mouseX))+ ((playerArray[1].y - mouseY) * (playerArray[1].y - mouseY)));
+				var two :int = Math.sqrt(((playerArray[2].x - mouseX) * (playerArray[2].x - mouseX))+ ((playerArray[2].y - mouseY) * (playerArray[2].y - mouseY)));
+				var targetNumber : Number;// = Math.floor(Math.random() * playerArray.length);
+				if (zero < one && zero < two)
+				{
+					targetNumber = 0;
+				}
+				else if (one < two)
+				{
+					targetNumber = 1;
+				}
+				else
+				{
+					targetNumber = 2;
+				}
+			}
+			else if (playerArray.length == 2)
+			{
+				var zero :int = Math.sqrt(((playerArray[0].x - mouseX) * (playerArray[0].x - mouseX))+ ((playerArray[0].y - mouseY) * (playerArray[0].y - mouseY)));
+				var one :int = Math.sqrt(((playerArray[1].x - mouseX) * (playerArray[1].x - mouseX))+ ((playerArray[1].y - mouseY) * (playerArray[1].y - mouseY)));
+				var targetNumber : Number;// = Math.floor(Math.random() * playerArray.length);
+				if (zero < one)
+				{
+					targetNumber = 0;
+				}
+				else
+				{
+					targetNumber = 1;
+				}			
+			}
+			else
+			{
+				targetNumber = 0;
+			}
 			missle = missleFactory.makeMissle(mouseX,mouseY,MissleFactory.PLAYER_MISSLE,playerArray[targetNumber].x,playerArray[targetNumber].y,stage.stageWidth);
 			addChild(missle);
 			missleArray.push(missle);
