@@ -88,7 +88,6 @@ package
 		private function loop(e:Event):void
 		{
 			
-			//trace("loop works");
 			missleOuterLoop : for (var i : int = missleArray.length - 1; i >= 0; i-- )
 			{
 				for (var l : int = explosionArray.length - 1; l >= 0; l-- )
